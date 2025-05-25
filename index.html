@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Automate Your Beauty Brand's Customer Support with AI</title>
-    <script src="https://cdn.botpress.cloud/webchat/v2.5/inject.js"></script>
     <meta name="description" content="Chatbot AI untuk beauty brands - Jawab DM otomatis, rekomendasi produk, konsultasi kulit 24/7">
     <style>
         * {
@@ -194,6 +193,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
 
         .chat-header {
@@ -220,6 +220,7 @@
             flex: 1;
             background: #f8fafc;
             position: relative;
+            overflow: hidden;
         }
 
         .chat-placeholder {
@@ -229,6 +230,58 @@
             transform: translate(-50%, -50%);
             text-align: center;
             color: #64748b;
+            z-index: 1;
+        }
+
+        /* Botpress Webchat Container */
+        #botpress-webchat {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            border: none !important;
+            border-radius: 0 0 25px 25px !important;
+        }
+
+        /* Hide default Botpress bubble */
+        .bp-widget-btn {
+            display: none !important;
+        }
+
+        /* Custom chat loading animation */
+        .chat-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #64748b;
+        }
+
+        .loading-dots {
+            display: flex;
+            gap: 4px;
+            margin-top: 1rem;
+        }
+
+        .loading-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff6b9d;
+            animation: bounce 1.4s ease-in-out infinite both;
+        }
+
+        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { 
+                transform: scale(0);
+            } 40% { 
+                transform: scale(1);
+            }
         }
 
         /* Testimonial Section */
@@ -352,28 +405,6 @@
             color: #ff6b9d;
         }
 
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .social-links a {
-            width: 40px;
-            height: 40px;
-            background: #4a5568;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            transition: background 0.3s;
-        }
-
-        .social-links a:hover {
-            background: #ff6b9d;
-        }
-
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .cta-buttons {
@@ -440,15 +471,6 @@
             50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
-
-        /* Botpress Chat Styling */
-        #chat-widget iframe {
-            border-radius: 0 0 25px 25px !important;
-        }
-
-        .bpFab {
-          display: none;
-    }
     </style>
 </head>
 <body>
@@ -536,11 +558,29 @@
                         <p style="opacity: 0.8; font-size: 0.9rem;">Online • Siap konsultasi</p>
                     </div>
                 </div>
-                <div class="chat-body" id="chat-widget">
-                    <div class="chat-placeholder">
-                        <h4>💄 Beauty Chatbot Demo</h4>
-                        <p>Chatbot akan dimuat di sini...</p>
-                        <div id="webchat-container" style="position: relative; width: 100%; height: 100%;">
+                <div class="chat-body" id="chat-container">
+                    <div class="chat-loading" id="loading-state">
+                        <h4>🤖 Memuat Glowie...</h4>
+                        <p>Chatbot sedang dipersiapkan</p>
+                        <div class="loading-dots">
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                        </div>
+                        <p style="font-size: 0.9rem; margin-top: 2rem; opacity: 0.7;">
+                            Tanya tentang skincare routine, rekomendasi produk, atau konsultasi kulit
+                        </p>
+                    </div>
+                    
+                    <!-- Botpress will be injected here -->
+                    <div id="webchat-placeholder" style="display: none;">
+                        <div style="padding: 2rem; text-align: center; color: #64748b;">
+                            <h4>💄 Demo Chat Beauty AI</h4>
+                            <p>Klik tombol di bawah untuk memulai chat dengan Glowie</p>
+                            <button onclick="startChat()" class="bpFab" style="margin-top: 1rem; padding: 0.8rem 2rem; background: #ff6b9d; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: 600;">
+                                Mulai Chat 💬
+                            </button>
+                            <div id="webchat-container" style="position: relative; width: 100%; height: 100%;">
                           <script src="https://cdn.botpress.cloud/webchat/v2.5/inject.js"></script>
   <script>
     window.botpress.on("webchat:ready", () => {
@@ -565,9 +605,7 @@
   "clientId": "abb004b4-f53e-408a-add7-9417c53104e2"
 });
 </div>
-                        <p style="font-size: 0.9rem; margin-top: 1rem; opacity: 0.7;">
-                            Tanya tentang skincare routine, rekomendasi produk, atau konsultasi kulit
-                        </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -649,37 +687,129 @@
        class="floating-whatsapp" target="_blank">
        📱
     </a>
-    <script>
 
-        // Wait for the chat to load, then move it to our demo container
-        setTimeout(() => {
-            // Find the Botpress webchat iframe
-            const botpressIframe = document.querySelector('iframe[src*="botpress"]');
-            const chatContainer = document.getElementById('chat-widget');
-            
-            if (botpressIframe && chatContainer) {
-                // Remove placeholder
-                const placeholder = chatContainer.querySelector('.chat-placeholder');
-                if (placeholder) {
-                    placeholder.remove();
+    <!-- Botpress Script -->
+    <script src="https://cdn.botpress.cloud/webchat/v2.5/inject.js"></script>
+    <script>
+        let chatInitialized = false;
+
+        // Show button immediately after loading finishes
+        function showChatButton() {
+            console.log('Showing chat button...');
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('webchat-placeholder').style.display = 'block';
+        }
+
+        // Initialize Botpress
+        function initializeBotpress() {
+            try {
+                if (window.botpress && !chatInitialized) {
+                    window.botpress.init({
+                        "botId": "f4c1aade-e624-470e-b477-309548b319de",
+                        "configuration": {
+                            "botName": "Glowie",
+                            "botDescription": "Beauty AI Assistant",
+                            "website": {},
+                            "email": {},
+                            "phone": {},
+                            "termsOfService": {},
+                            "privacyPolicy": {},
+                            "color": "#e93d82",
+                            "variant": "soft",
+                            "themeMode": "light",
+                            "fontFamily": "inter",
+                            "radius": 1
+                        },
+                        "clientId": "abb004b4-f53e-408a-add7-9417c53104e2"
+                    });
+                    
+                    chatInitialized = true;
+                    console.log('Botpress initialized');
                 }
-                
-                // Style the iframe to fit our container
-                botpressIframe.style.width = '100%';
-                botpressIframe.style.height = '100%';
-                botpressIframe.style.border = 'none';
-                botpressIframe.style.borderRadius = '0 0 25px 25px';
-                
-                // Move iframe to our demo container
-                chatContainer.appendChild(botpressIframe);
-                
-                // Hide the original container if it exists
-                const originalContainer = botpressIframe.parentElement;
-                if (originalContainer && originalContainer !== chatContainer) {
-                    originalContainer.style.display = 'none';
-                }
+            } catch (error) {
+                console.log('Botpress init error:', error);
             }
-        }, 3000);
+        }
+
+        // Start chat function
+        function startChat() {
+            console.log('Starting chat...');
+            
+            if (window.botpress) {
+                // Hide placeholder and open chat
+                document.getElementById('webchat-placeholder').style.display = 'none';
+                
+                // Show loading while opening chat
+                const loadingDiv = document.createElement('div');
+                loadingDiv.innerHTML = `
+                    <div style="padding: 2rem; text-align: center; color: #64748b;">
+                        <h4>🤖 Membuka Chat Glowie...</h4>
+                        <div class="loading-dots">
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('chat-container').appendChild(loadingDiv);
+                
+                window.botpress.open();
+                
+                // Try to embed the chat in our container
+                setTimeout(() => {
+                    const iframe = document.querySelector('iframe[src*="botpress"]');
+                    const chatContainer = document.getElementById('chat-container');
+                    
+                    if (iframe && chatContainer) {
+                        // Remove loading
+                        loadingDiv.remove();
+                        
+                        // Style the iframe
+                        iframe.style.position = 'absolute';
+                        iframe.style.top = '0';
+                        iframe.style.left = '0';
+                        iframe.style.width = '100%';
+                        iframe.style.height = '100%';
+                        iframe.style.border = 'none';
+                        iframe.style.borderRadius = '0 0 25px 25px';
+                        iframe.style.zIndex = '10';
+                        
+                        // Move to our container
+                        chatContainer.appendChild(iframe);
+                        
+                        console.log('Chat embedded successfully');
+                    } else {
+                        console.log('Could not find iframe, chat will open in popup');
+                        // Remove loading if embedding fails
+                        loadingDiv.remove();
+                        // Show message that chat opened in popup
+                        const popupMsg = document.createElement('div');
+                        popupMsg.innerHTML = `
+                            <div style="padding: 2rem; text-align: center; color: #64748b;">
+                                <h4>💬 Chat Glowie Sudah Terbuka!</h4>
+                                <p>Lihat di popup atau tab baru</p>
+                            </div>
+                        `;
+                        chatContainer.appendChild(popupMsg);
+                    }
+                }, 2000);
+            } else {
+                alert('Chatbot belum siap, coba lagi dalam beberapa detik');
+            }
+        }
+
+        // Show button after 3 seconds regardless of Botpress status
+        setTimeout(showChatButton, 3000);
+
+        // Try to initialize Botpress multiple times
+        setTimeout(initializeBotpress, 1000);
+        setTimeout(initializeBotpress, 3000);
+        setTimeout(initializeBotpress, 5000);
+
+        // Fallback initialization
+        window.addEventListener('load', function() {
+            setTimeout(initializeBotpress, 2000);
+        });
 
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -697,19 +827,8 @@
         // Track CTA button clicks
         document.querySelectorAll('.btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                // You can add Google Analytics tracking here
                 console.log('CTA clicked:', this.textContent);
             });
-        });
-
-        // Show chatbot loading message
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                const placeholder = document.querySelector('.chat-placeholder h4');
-                if (placeholder) {
-                    placeholder.textContent = '🤖 Glowie sedang loading...';
-                }
-            }, 1000);
         });
     </script>
 </body>
