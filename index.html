@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Automate Your Beauty Brand's Customer Support with AI</title>
-    <script src="https://cdn.botpress.cloud/webchat/v2.5/inject.js"></script>
     <meta name="description" content="Chatbot AI untuk beauty brands - Jawab DM otomatis, rekomendasi produk, konsultasi kulit 24/7">
     <style>
         * {
@@ -440,6 +439,11 @@
             50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
+
+        /* Botpress Chat Styling */
+        #chat-widget iframe {
+            border-radius: 0 0 25px 25px !important;
+        }
     </style>
 </head>
 <body>
@@ -523,14 +527,14 @@
                 <div class="chat-header">
                     <div class="chat-avatar">🤖</div>
                     <div>
-                        <h3>Beauty AI Assistant</h3>
+                        <h3>Glowie - Beauty AI Assistant</h3>
                         <p style="opacity: 0.8; font-size: 0.9rem;">Online • Siap konsultasi</p>
                     </div>
                 </div>
                 <div class="chat-body" id="chat-widget">
                     <div class="chat-placeholder">
                         <h4>💄 Beauty Chatbot Demo</h4>
-                        <p>Chatbot akan dimuat di sini</p>
+                        <p>Chatbot akan dimuat di sini...</p>
                         <p style="font-size: 0.9rem; margin-top: 1rem; opacity: 0.7;">
                             Tanya tentang skincare routine, rekomendasi produk, atau konsultasi kulit
                         </p>
@@ -567,11 +571,11 @@
             </p>
             
             <div class="cta-buttons">
-                <a href="https://wa.me/6288297036278?text=Halo,%20saya%20tertarik%20dengan%20chatbot%20AI%20untuk%20beauty%20brand%20saya.%20Bisa%20coba%20gratis%20dulu?" 
+                <a href="https://wa.me/6288297036178?text=Halo,%20saya%20tertarik%20dengan%20chatbot%20AI%20untuk%20beauty%20brand%20saya.%20Bisa%20coba%20gratis%20dulu?" 
                    class="btn btn-primary" target="_blank">
                    Coba Gratis 7 Hari
                 </a>
-                <a href="https://wa.me/6288297036278?text=Hi,%20saya%20mau%20konsultasi%20dan%20demo%20chatbot%20AI%20beauty%20dulu." 
+                <a href="https://wa.me/6288297036178?text=Hi,%20saya%20mau%20konsultasi%20dan%20demo%20chatbot%20AI%20beauty%20dulu." 
                    class="btn btn-secondary" target="_blank">
                    Hubungi Kami untuk Demo
                 </a>
@@ -590,8 +594,8 @@
                 
                 <div class="footer-section">
                     <h3>Kontak</h3>
-                    <a href="https://wa.me/6288297036278">📱 WhatsApp: +62 882-9703-6278</a>
-                    <a href="mailto:hello@beautyai.com">📧 Email: rifkimaulanaaji@gmail.com</a>
+                    <a href="https://wa.me/6288297036178">📱 WhatsApp: +62 882-9703-6178</a>
+                    <a href="mailto:hello@beautyai.com">📧 Email: hello@beautyai.com</a>
                     <a href="https://instagram.com/beautyai">📸 Instagram: @beautyai</a>
                 </div>
                 
@@ -611,60 +615,65 @@
     </footer>
 
     <!-- Floating WhatsApp -->
-    <a href="https://wa.me/6288297036278?text=Hi,%20saya%20tertarik%20dengan%20chatbot%20AI%20beauty!" 
+    <a href="https://wa.me/6288297036178?text=Hi,%20saya%20tertarik%20dengan%20chatbot%20AI%20beauty!" 
        class="floating-whatsapp" target="_blank">
        📱
     </a>
 
-    <!-- Botpress Script -->
+    <!-- Botpress Webchat Script -->
+    <script src="https://cdn.botpress.cloud/webchat/v2.5/inject.js"></script>
     <script>
-        // Konfigurasi Botpress untuk Beauty Chatbot Demo
+        // Initialize Botpress with your configuration
         window.botpress.init({
-  "botId": "f4c1aade-e624-470e-b477-309548b319de",
-  "configuration": {
-    "botName": "Glowie",
-    "botDescription": "lorem ipsum",
-    "website": {},
-    "email": {},
-    "phone": {},
-    "termsOfService": {},
-    "privacyPolicy": {},
-    "color": "#e93d82",
-    "variant": "soft",
-    "themeMode": "light",
-    "fontFamily": "inter",
-    "radius": 1
-  },
-  "clientId": "abb004b4-f53e-408a-add7-9417c53104e2
-            // Styling
-            "containerWidth": "100%",
-            "layoutWidth": "100%"
+            "botId": "f4c1aade-e624-470e-b477-309548b319de",
+            "configuration": {
+                "botName": "Glowie",
+                "botDescription": "Beauty AI Assistant untuk konsultasi skincare dan rekomendasi produk",
+                "website": {},
+                "email": {},
+                "phone": {},
+                "termsOfService": {},
+                "privacyPolicy": {},
+                "color": "#e93d82",
+                "variant": "soft",
+                "themeMode": "light",
+                "fontFamily": "inter",
+                "radius": 1
+            },
+            "clientId": "abb004b4-f53e-408a-add7-9417c53104e2"
         });
 
-        // Pindahkan ke demo container
+        // Wait for the chat to load, then move it to our demo container
         setTimeout(() => {
-            const webChatIframe = document.querySelector('iframe[title*="webchat"]');
+            // Find the Botpress webchat iframe
+            const botpressIframe = document.querySelector('iframe[src*="botpress"]');
             const chatContainer = document.getElementById('chat-widget');
             
-            if (webChatIframe && chatContainer) {
+            if (botpressIframe && chatContainer) {
+                // Remove placeholder
                 const placeholder = chatContainer.querySelector('.chat-placeholder');
-                if (placeholder) placeholder.remove();
+                if (placeholder) {
+                    placeholder.remove();
+                }
                 
-                webChatIframe.style.width = '100%';
-                webChatIframe.style.height = '100%';
-                webChatIframe.style.border = 'none';
+                // Style the iframe to fit our container
+                botpressIframe.style.width = '100%';
+                botpressIframe.style.height = '100%';
+                botpressIframe.style.border = 'none';
+                botpressIframe.style.borderRadius = '0 0 25px 25px';
                 
-                chatContainer.appendChild(webChatIframe);
+                // Move iframe to our demo container
+                chatContainer.appendChild(botpressIframe);
                 
-                // Hapus container default
-                const defaultContainer = document.querySelector('[id*="webchat"]');
-                if (defaultContainer && defaultContainer !== webChatIframe) {
-                    defaultContainer.remove();
+                // Hide the original container if it exists
+                const originalContainer = botpressIframe.parentElement;
+                if (originalContainer && originalContainer !== chatContainer) {
+                    originalContainer.style.display = 'none';
                 }
             }
-        }, 2000);
+        }, 3000);
 
-        // Smooth scrolling
+        // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -677,12 +686,22 @@
             });
         });
 
-        // Track CTA clicks (optional - bisa integrate dengan Google Analytics)
+        // Track CTA button clicks
         document.querySelectorAll('.btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                // gtag('event', 'click', { 'event_category': 'CTA', 'event_label': this.textContent });
+                // You can add Google Analytics tracking here
                 console.log('CTA clicked:', this.textContent);
             });
+        });
+
+        // Show chatbot loading message
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const placeholder = document.querySelector('.chat-placeholder h4');
+                if (placeholder) {
+                    placeholder.textContent = '🤖 Glowie sedang loading...';
+                }
+            }, 1000);
         });
     </script>
 </body>
